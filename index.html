@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Flip</title>
+</head>
+
+<style>
+    * { box-sizing: border-box; padding: 0; margin: 0;}
+
+    .container {
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    p {position: absolute; top: 10vh;}
+
+    .scene {
+        width: 200px;
+        height: 260px;
+        border: 1px solid #CCC;
+        margin: 40px 0;
+        perspective: 500px;
+    }
+
+    .card {
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transition: transform 1s;
+        transform-style: preserve-3d;
+    }
+    .card { transform-origin: center right; }
+
+    .card.is-flipped {
+        transform: translateX(-100%) rotateY(-90deg);
+    }
+
+    .card__face {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        line-height: 260px;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        font-size: 40px;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+
+    .card__face--front {
+        background: red;
+    }
+
+    .card__face--left {
+        background: blue;
+        transform: rotateY( 180deg );
+    }
+
+</style>
+
+<body>
+    <div class="container">
+        <div class="scene">
+            <div class="card">
+                <div class="card__face card__face--front">front</div>
+                <div class="card__face card__face--left">left</div>
+            </div>
+        </div>
+        <p>Click card to flip.</p>
+    </div>
+</body>
+
+<script>
+    const card = document.querySelector('.card');
+    const cards = [...document.querySelectorAll('.card_face')];
+    card.addEventListener( 'click', () => card.classList.toggle('is-flipped'));
+    console.log(cards)
+</script>
+
+</html>

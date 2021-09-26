@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOX - 2</title>
+</head>
+
+<style>
+    * { box-sizing: border-box; padding: 0; margin: 0;}
+
+    .container {
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    p {position: absolute; top: 10vh;}
+
+    .scene {
+        /* z-index: -10; */
+        /* background: grey; */
+        width: 400px;
+        height: 400px;
+        perspective: 400px;
+        /* transition: transform .5s; */
+    }
+
+    /* .shift-right { */
+    #p0 { transform: translateX( 75%); }
+
+    /* .shift-left { */
+    #p2 { transform: translateX(-75%); }
+
+    .box {
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transition: transform 0.5s;
+        transform-style: preserve-3d;
+    }
+
+    .box.flip-left {
+        transform: translateX(-100%) rotateY(-90deg);
+    }
+    .box.flip-right {
+        transform: translateX(100%) rotateY(90deg);
+    }
+
+    .card__face {
+        /* outline: 2px solid black; */
+        outline: 2px solid #ffa500;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        line-height: 200px;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        font-size:32px;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 2.5%;
+    }
+
+    .card__face--front {
+        background: #2d4b4b;
+        /* background: hsla(  0, 100%, 50%, 0.7); */
+        justify-content: center;
+    }
+
+    .card__face--left {
+        background: #222;
+        /* background: hsla(180, 100%, 50%, 0.7); */
+        writing-mode: vertical-lr;
+        text-orientation: upright;
+        font-size: 20px;
+        width: 25%;
+        transform-origin: center right;
+        transform: translateX(-100%) rotateY( -90deg );
+    }
+
+    .card__face--right {
+        background: #222;
+        /* background: hsla( 60, 100%, 50%, 0.7); */
+        writing-mode: vertical-lr;
+        text-orientation: upright;
+        font-size: 20px;
+        width: 25%;
+        transform-origin: center left;
+        transform: translateX(400%) rotateY( 90deg );
+    }
+
+</style>
+
+<body>
+    <div class="container">
+        <div class="scene" id="p0">
+            <div class="box">
+                <!-- <div class="card__face card__face--left">left</div> -->
+                <div class="card__face card__face--front">About Page</div>
+                <div class="card__face card__face--right" id="b-about">ABOUT</div>
+            </div>
+        </div>
+        <div class="scene" id="p1">
+            <div class="box">
+                <div class="card__face card__face--left" id="b-contacts-l">CONTACTS</div>
+                <div class="card__face card__face--front">Web Devp</div>
+                <div class="card__face card__face--right" id="b-contacts-r">CONTACTS</div> <!-- NOT WORKING - covered by scene element-->
+            </div>
+        </div>
+        <div class="scene" id="p2">
+            <div class="box">
+                <div class="card__face card__face--left" id="b-projects">PORTFOLIO</div>
+                <div class="card__face card__face--front">Projects page</div>
+                <!-- <div class="card__face card__face--right">right</div> -->
+            </div>
+        </div>
+        <p style="text-align: center;">
+            <button class="left-button">LEFT</button>
+            <button class="center-button">-CENTER-</button>
+            <button class="right-button">RIGHT</button>
+        </p>
+    </div>
+</body>
+
+<script>
+    let activeBox = 1;
+    const boxes = [...document.querySelectorAll('.box')];
+    boxes.forEach((box, i) => flipOne(box,'LCR'[i]));
+
+    const leftButton = document.querySelector('.left-button');
+    leftButton.addEventListener('click', flipAbout);
+    // document.querySelector('#b-about').addEventListener('click', flipAbout);
+
+
+    const centerButton = document.querySelector('.center-button');
+    centerButton.addEventListener('click', flipContacts);
+    // document.querySelector('#b-contacts-l').addEventListener('click', flipContacts);
+    // document.querySelector('#b-contacts-r').addEventListener('click', flipContacts);
+
+
+    const rightButton = document.querySelector('.right-button');
+    rightButton.addEventListener('click', flipProjects);
+    // document.querySelector('#b-projects').addEventListener('click', flipProjects);
+
+
+    function flipAbout() {
+        activeBox = 0;
+        boxes.forEach((box, i) => flipOne(box,'CRR'[i]))
+    };
+
+    function flipContacts() {
+        activeBox = 1;
+        boxes.forEach((box, i) => flipOne(box,'LCR'[i]));
+    }
+
+    function flipProjects() {
+        activeBox = 2;
+        boxes.forEach((box, i) => flipOne(box,'LLC'[i]));
+    }
+
+    function flipOne(box, pattern) {
+        if (pattern === 'L') flipLeft(box);
+        else if (pattern === 'C') flipCenter(box);
+        else if (pattern === 'R') flipRight(box);
+
+        function flipRight(box) {
+            if (!box.classList.contains('flip-left')) {
+                    box.style.transformOrigin = 'center left';
+                    box.classList.add('flip-right');
+            } else if (box.classList.contains('flip-left')) {
+                box.style.transition = '0s';
+                box.classList.remove('flip-left');
+                box.style.transformOrigin = 'center left';
+                box.classList.add('flip-right');
+                // box.style.transition = null;
+            }
+        }
+        function flipLeft(box) {
+            if (!box.classList.contains('flip-right')) {
+                    box.style.transformOrigin = 'center right';
+                    box.classList.add('flip-left');
+                }
+        }
+        function flipCenter(box) {
+            box.classList.remove('flip-left');
+            box.classList.remove('flip-right');    
+        }
+    }
+</script>
+
+</html>
